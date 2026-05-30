@@ -1,204 +1,194 @@
+# Ollama Setup Guide — Ubuntu Desktop
 
-Ollama Setup Guide for Ubuntu Desktop
+> A quick guide to installing and running Ollama on an Ubuntu desktop machine.
 
-A quick guide to installing and running Ollama on an Ubuntu desktop machine.
+**Tested on:**
 
-Tested on:
+| Component | Spec |
+|-----------|------|
+| Machine | HP ProBook 450 G4 |
+| OS | Ubuntu Desktop |
+| RAM | 8 GB |
+| CPU | Intel i5 |
 
-* HP ProBook 450 G4
-* Ubuntu Desktop
-* 8 GB RAM
-* Intel i5 CPU
+---
 
-⸻
+## Prerequisites
 
-Prerequisites
+Open a terminal with:
 
-Open a terminal:
-
+```
 Ctrl + Alt + T
+```
 
-⸻
+---
 
-Install curl
+## 1. Install curl
 
 Some Ubuntu installations do not include curl by default.
 
-Update package lists:
+**Update package lists:**
 
+```bash
 sudo apt update
+```
 
-Install curl:
+**Install curl:**
 
+```bash
 sudo apt install curl -y
+```
 
-Verify installation:
+**Verify installation:**
 
+```bash
 curl --version
+```
 
-⸻
+---
 
-Install Ollama
+## 2. Install Ollama
 
 Run the official installation script:
 
+```bash
 curl -fsSL https://ollama.com/install.sh | sh
+```
 
-Verify Ollama is installed:
+**Verify Ollama is installed:**
 
+```bash
 ollama --version
+```
 
-⸻
+---
 
-Download and Run Your First AI Model
+## 3. Download and Run Your First Model
 
-Llama 3.2 (Recommended for 8 GB RAM)
+### Llama 3.2 — Recommended for 8 GB RAM
 
+```bash
 ollama run llama3.2:3b
+```
 
-The first run downloads the model automatically.
+> The first run downloads the model automatically. Once downloaded, you can begin chatting immediately.
 
-Once downloaded, you can begin chatting immediately.
+**Example prompts to try:**
 
-Example prompts:
-
+```
 Explain how Linux permissions work.
 Write a Bash script that monitors disk usage.
 Teach me Python basics.
+```
 
-⸻
+---
 
-Try the Mistral Model
+### Mistral — Alternative Model
 
-Download and run:
-
+```bash
 ollama run mistral
+```
 
 Compare responses and performance with Llama.
 
-⸻
+---
 
-View Installed Models
+## 4. Manage Models
 
-List all downloaded models:
+**List all downloaded models:**
 
+```bash
 ollama list
+```
 
 Example output:
 
+```
 NAME              ID              SIZE
 llama3.2:3b       xxxxxxxx        2.0 GB
 mistral:latest    xxxxxxxx        4.1 GB
+```
 
-⸻
+**Update a model to the latest version:**
 
-Exit a Chat Session
-
-Press:
-
-Ctrl + D
-
-or type:
-
-/bye
-
-⸻
-
-Update a Model
-
-Download the latest version of a model:
-
+```bash
 ollama pull llama3.2
+```
 
-or
-
+```bash
 ollama pull mistral
+```
 
-⸻
+**Remove a model:**
 
-System Information Commands
+```bash
+ollama rm model-name
+```
 
-Check CPU
+---
 
+## 5. Exit a Chat Session
+
+Press `Ctrl + D` or type:
+
+```
+/bye
+```
+
+---
+
+## System Information Commands
+
+Useful for checking your hardware before choosing a model.
+
+```bash
+# CPU
 lscpu | grep "Model name"
 
-Check RAM
-
+# RAM
 free -h
 
-Check Graphics Hardware
-
+# Graphics hardware
 lspci | grep -E "VGA|3D|Display"
 
-Check Ubuntu Version
-
+# Ubuntu version
 cat /etc/os-release
+```
 
-⸻
+---
 
-Recommended Next Steps
+## Recommended Next Steps
 
-Install Open WebUI
+**[Open WebUI](https://openwebui.com)** — a ChatGPT-style web interface for your local models.
 
-Provides a ChatGPT-style web interface for local models.
+**Useful things to try with local AI:**
 
-https://openwebui.com
+- Linux administration
+- Bash scripting
+- Learning Python
+- Summarising documents
+- Offline AI assistance
+- Private note-taking
 
-Useful Uses for Local AI
+---
 
-* Linux administration
-* Bash scripting
-* Learning Python
-* Summarising documents
-* Offline AI assistance
-* Private note-taking
+## Notes for 8 GB RAM Systems
 
-⸻
+| Category | Models |
+|----------|--------|
+| **Recommended** | Llama 3.2 3B, small Gemma models, small Qwen models |
+| **Usable (slower)** | Mistral 7B, other 7B class models |
+| **Not recommended** | 14B+ models, multiple models simultaneously |
 
-Notes for 8 GB RAM Systems
+---
 
-Recommended:
+## Cheat Sheet
 
-* Llama 3.2 3B
-* Small Gemma models
-* Small Qwen models
-
-Usable but slower:
-
-* Mistral 7B
-* Other 7B class models
-
-Not recommended:
-
-* Large 14B+ models
-* Multiple AI models running simultaneously
-
-⸻
-
-Ollama Cheat Sheet
-
-Install:
-
-curl -fsSL https://ollama.com/install.sh | sh
-
-Run model:
-
-ollama run llama3.2:3b
-
-List models:
-
-ollama list
-
-Update model:
-
-ollama pull llama3.2
-
-Remove model:
-
-ollama rm model-name
-
-Check version:
-
-ollama --version
-
-
+| Action | Command |
+|--------|---------|
+| Install Ollama | `curl -fsSL https://ollama.com/install.sh \| sh` |
+| Run a model | `ollama run llama3.2:3b` |
+| List models | `ollama list` |
+| Update a model | `ollama pull llama3.2` |
+| Remove a model | `ollama rm model-name` |
+| Check version | `ollama --version` |
