@@ -1,4 +1,3 @@
-Absolutely. Here’s a GitHub-ready README-style Markdown document you can save as README.md.
 
 Ollama Setup Guide for Ubuntu Desktop
 
@@ -202,6 +201,4 @@ Check version:
 
 ollama --version
 
-Happy experimenting with local AI!
 
-You can paste that directly into a GitHub repository as README.md. It should render nicely and serve as a useful reference for future installs.
