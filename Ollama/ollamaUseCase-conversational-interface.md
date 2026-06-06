@@ -1,4 +1,4 @@
-# Ollama User Case — Conversational Interface Setup
+# Ollama User Case — Conv Interface Setup (not used)
 
 ### 🦙 Ollama — [/ollama](./ollama/)
 
