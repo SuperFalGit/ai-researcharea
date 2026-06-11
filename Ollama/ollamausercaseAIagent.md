@@ -1,159 +1,276 @@
-# 🧠 Ollama IT Network Assistant Agent
+# Building My First Ollama AI Agent (NetAssist)
 
-This repository documents the design and development of a local AI agent built using **Ollama** on Ubuntu.
+## Overview
 
-The goal is to create a **domain-restricted AI assistant** focused specifically on IT networking and Linux system administration.
+This guide documents the process used to create my first custom AI agent using Ollama on Ubuntu.
 
----
+The objective was to create a specialised AI assistant called **NetAssist** that focuses on:
 
-## 🎯 Purpose
+* Linux system administration
+* Networking
+* System diagnostics
+* Troubleshooting
 
-The purpose of this project is to build a local AI assistant that:
+Rather than creating a completely new Large Language Model (LLM), Ollama allows us to create a custom model which layers instructions and behaviour on top of an existing base model.
 
-- Runs fully offline using Ollama
-- Specialises only in IT networking and Linux
-- Acts as a focused technical assistant rather than a general chatbot
-- Helps with learning, troubleshooting, and system administration tasks
+In this case:
 
----
-
-## 🧩 Core Concept
-
-Instead of using a general-purpose AI model, this project creates a **restricted-domain AI agent** that only responds to:
-
-- Linux (Ubuntu system administration)
-- Networking (IP, DNS, routing, ports, firewall rules)
-- System diagnostics and troubleshooting
-- Command-line tools and system utilities
-
-If the user asks anything outside this scope, the agent should refuse and redirect back to relevant topics.
+```text
+llama3.2:3b
++
+Custom System Prompt
+=
+NetAssist
+```
 
 ---
 
-## 🛠️ Phase 1: Basic System Prompt Agent
+# Prerequisites
 
-The simplest version of the agent is created by applying a system prompt directly in Ollama.
+Ubuntu Desktop with Ollama installed and working.
 
-Example usage:
+Verify installation:
 
-ollama run llama3.2:3b
+```bash
+ollama --version
+```
 
-Then apply a system instruction:
+Verify the Ollama service is running:
 
-You are a strict IT network assistant.
-
-You must ONLY discuss:
-- Linux (Ubuntu)
-- Networking (IP addresses, DNS, routing, firewalls)
-- System administration
-- Troubleshooting system and network issues
-
-If the user asks anything outside this scope:
-- Politely refuse
-- Redirect them back to networking or Linux topics
-
-Keep responses concise, practical, and command-line focused.
+```bash
+ollama list
+```
 
 ---
 
-## 🏗️ Phase 2: Custom Ollama Model (Recommended)
+# Step 1 - Create Project Directory
 
-To make the agent reusable and persistent, we define a custom model using a Modelfile.
+Create a dedicated location for custom Ollama agents:
 
-Modelfile:
+```bash
+mkdir -p ~/ollama-agents/netassist
+```
 
-FROM llama3.2:3b
+Move into the directory:
 
-SYSTEM """
+```bash
+cd ~/ollama-agents/netassist
+```
+
+Confirm location:
+
+```bash
+pwd
+```
+
+Expected output:
+
+```text
+/home/<username>/ollama-agents/netassist
+```
+
+---
+
+# Step 2 - Create the Modelfile
+
+Create a new file called `Modelfile`:
+
+```bash
+nano Modelfile
+```
+
+> **Important:** The file name is exactly `Modelfile` and has no file extension.
+
+---
+
+# Step 3 - Define the Agent
+
+Paste the following content into the Modelfile:
+
+```text
+from llama3.2:3b
+
+system """
 You are NetAssist, a Linux and networking-focused AI assistant.
 
 Rules:
+
 - Only answer questions about:
   - Linux (Ubuntu system administration)
   - Networking (IP, DNS, routing, firewall configuration)
   - System diagnostics and troubleshooting
 
 - If asked anything outside this scope:
-  - Politely refuse
-  - Redirect the user back to relevant IT/networking topics
+  - Politely refuse.
+  - Redirect the user back to Linux, networking, or troubleshooting topics.
 
-Be concise, practical, and command-line focused.
+Guidelines:
+
+- Prefer command-line solutions.
+- Explain commands before giving them.
+- Keep answers concise and practical.
+- Use Ubuntu examples whenever possible.
+- When troubleshooting, work step-by-step and gather evidence before suggesting fixes.
 """
+```
+
+Save the file:
+
+```text
+Ctrl + O
+Enter
+Ctrl + X
+```
 
 ---
 
-Build the model:
+# Step 4 - Verify the Modelfile
 
-ollama create netassist -f Modelfile
+Check the file contents:
+
+```bash
+cat Modelfile
+```
+
+or
+
+```bash
+cat -n Modelfile
+```
+
+The first line should be:
+
+```text
+from llama3.2:3b
+```
 
 ---
 
-Run the model:
+# Step 5 - Build the Custom Model
 
+Create the custom Ollama model:
+
+```bash
+ollama create netassist -f ~/ollama-agents/netassist/Modelfile
+```
+
+Successful output looks similar to:
+
+```text
+gathering model components
+using existing layer ...
+creating new layer ...
+writing manifest
+success
+```
+
+---
+
+# Step 6 - Verify the Model Exists
+
+List installed models:
+
+```bash
+ollama list
+```
+
+Example output:
+
+```text
+NAME                ID              SIZE
+netassist:latest    xxxxxxxxxxxx    2.0 GB
+llama3.2:3b         xxxxxxxxxxxx    2.0 GB
+```
+
+---
+
+# Understanding the Model Size
+
+At first glance it appears that NetAssist is another 2 GB model.
+
+This is not actually the case.
+
+Ollama reuses the underlying model layers.
+
+Conceptually:
+
+```text
+llama3.2:3b
+      +
+NetAssist Instructions
+      =
+netassist
+```
+
+The base model weights are shared, and only a small configuration layer is added.
+
+---
+
+# Step 7 - Run the Agent
+
+Start NetAssist:
+
+```bash
 ollama run netassist
+```
+
+The custom system instructions are now automatically loaded.
 
 ---
 
-## 🧠 Agent Behaviour Design
+# Step 8 - Test the Agent
 
-This agent is designed to behave as:
+Example networking question:
 
-- A Linux system administrator assistant
-- A networking troubleshooting expert
-- A command-line focused IT support tool
+```text
+How do I find my IP address on Ubuntu?
+```
 
-It is NOT intended to:
+Example DNS question:
 
-- Provide general knowledge or entertainment
-- Answer unrelated topics
-- Act as a general-purpose chatbot
+```text
+How do I check which DNS server Ubuntu is using?
+```
 
----
+Example out-of-scope question:
 
-## 🔒 Scope Control Philosophy
+```text
+Who won the 2022 World Cup?
+```
 
-This project explores AI constraint design, where:
+Desired behaviour:
 
-- The model is intentionally restricted in scope
-- Behaviour is controlled through system prompts
-- Outputs are guided toward technical usefulness
-- Responses outside domain are discouraged
-
-This creates a more focused and practical AI tool for IT learning and troubleshooting.
-
----
-
-## 🚀 Future Improvements
-
-Planned enhancements include:
-
-- Integration with Python system diagnostic scripts
-- Local knowledge base (RAG system using documents)
-- Web UI interface using Open WebUI
-- Logging and tracking of network troubleshooting sessions
-- Multi-agent system (network specialist, Linux specialist, security assistant)
+```text
+I am focused on Linux and networking topics.
+Please ask a question related to Ubuntu, networking, or system administration.
+```
 
 ---
 
-## 📌 Status
+# Future Enhancements
 
-Early development phase  
-Experimental AI agent design  
-Built using Ollama + local LLMs on Ubuntu
-
----
-
-## 🧭 Goal
-
-To build a local offline IT assistant capable of:
-
-- Diagnosing network issues
-- Explaining Linux system behaviour
-- Assisting with system administration tasks
-- Supporting hands-on learning and experimentation
+* Stronger scope restrictions
+* Network troubleshooting workflows
+* Integration with Python diagnostic scripts
+* Retrieval-Augmented Generation (RAG)
+* Open WebUI integration
+* Multi-agent architecture
 
 ---
 
-## 📎 Notes
+# Lessons Learned
 
-This project is actively evolving. Initial versions focus on prompt-based control, with future upgrades moving toward more advanced agent architectures and system integrations.
+* Ollama custom models are built using Modelfiles.
+* Custom models do not duplicate the underlying LLM.
+* The base model is reused through shared layers.
+* System prompts can be used to create specialised AI agents.
+* Building and rebuilding custom agents is fast and lightweight.
+
+---
+
+# Project Status
+
+* ✅ Ollama installed
+* ✅ Custom NetAssist model created
+* ✅ Agent successfully built and running
+* 🚧 Future work planned around diagnostics, automation and RAG integration
